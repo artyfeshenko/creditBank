@@ -1,0 +1,16 @@
+package ru.feshenko.credit.bank.calculator.dto;
+
+import java.math.BigDecimal;
+import java.util.UUID;
+
+public record LoanOfferDto(
+        UUID statementId,
+        BigDecimal requestedAmount,
+        BigDecimal totalAmount,
+        Integer term,
+        BigDecimal monthlyPaymen,
+        BigDecimal rate,
+        Boolean isInsuranceEnabled,
+        Boolean isSalaryClient
+) {
+}
