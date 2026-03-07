@@ -1,5 +1,8 @@
 package ru.feshenko.credit.bank.calculator.dto;
 
+import ru.feshenko.credit.bank.calculator.enums.GenderEnum;
+import ru.feshenko.credit.bank.calculator.enums.MaritalStatusEnum;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
@@ -9,13 +12,13 @@ public record ScoringDataDto(
         String firstName,
         String lastName,
         String middleName,
-        Enum gender,
+        GenderEnum gender,
         LocalDate birthdate,
         String passportSeries,
         String passportNumber,
         LocalDate passportIssueDate,
         String passportIssueBranch,
-        Enum maritalStatus,
+        MaritalStatusEnum maritalStatus,
         Integer dependentAmount,
         EmploymentDto employment,
         String accountNumber,
