@@ -1,5 +1,6 @@
 package ru.feshenko.credit.bank.calculator.handler;
 
+import io.swagger.v3.oas.annotations.Hidden;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -11,6 +12,7 @@ import ru.feshenko.credit.bank.calculator.exception.ScoringDataException;
 import java.time.LocalDateTime;
 import java.util.stream.Collectors;
 
+@Hidden
 @RestControllerAdvice
 public class GlobalExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)

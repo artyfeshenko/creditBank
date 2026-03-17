@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import ru.feshenko.credit.bank.calculator.dto.ScoringDataDto;
 import ru.feshenko.credit.bank.calculator.enums.EmploymentStatusEnum;
 import ru.feshenko.credit.bank.calculator.enums.GenderEnum;
+import ru.feshenko.credit.bank.calculator.exception.ScoringDataException;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -17,7 +18,7 @@ public class ScoringService {
     private final CalculatorService calculatorService;
 
     public BigDecimal calculateScoringRate(ScoringDataDto dto) {
-        validateScoringDate(dto);
+        validateScoringData(dto);
         BigDecimal rate = calculatorService.calculateRate(dto.isInsuranceEnabled(), dto.isSalaryClient());
         rate = calculateEmploymentScoring(dto, rate);
         rate = calculatePositionScoring(dto, rate);
@@ -26,26 +27,26 @@ public class ScoringService {
         return rate;
     }
 
-    public void validateScoringDate(ScoringDataDto dto) {
+    public void validateScoringData(ScoringDataDto dto) {
         if (dto.employment().employmentStatus() == EmploymentStatusEnum.UNEMPLOYED) {
-            throw new RuntimeException("you are unemployed");
+            throw new ScoringDataException("you are unemployed");
         }
 
         if (dto.amount().compareTo(dto.employment().salary().multiply(BigDecimal.valueOf(24))) > 0) {
-            throw new RuntimeException("the loan amount exceeds 24 salaries");
+            throw new ScoringDataException("the loan amount exceeds 24 salaries");
         }
 
         int age = Period.between(dto.birthdate(), LocalDate.now()).getYears();
         if (age < 20 || age > 65) {
-            throw new RuntimeException("Your age is not suitable");
+            throw new ScoringDataException("Your age is not suitable");
         }
 
         if (dto.employment().workExperienceTotal() < 18) {
-            throw new RuntimeException("your work experience is too short");
+            throw new ScoringDataException("your work experience is too short");
         }
 
         if (dto.employment().workExperienceCurrent() < 3) {
-            throw new RuntimeException("your work experience is too short");
+            throw new ScoringDataException("your work experience is too short");
         }
     }
 
