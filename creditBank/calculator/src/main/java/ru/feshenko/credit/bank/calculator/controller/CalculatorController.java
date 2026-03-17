@@ -29,6 +29,6 @@ public class CalculatorController {
 
     @PostMapping("/calc")
     public CreditDto scoreAndCalculate(@RequestBody ScoringDataDto scoringDataDto) {
-        return null;
+        return calculatorService.scoreAndCalculateCredit(scoringDataDto);
     }
 }
