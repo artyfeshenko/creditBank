@@ -8,7 +8,7 @@ public record LoanOfferDto(
         BigDecimal requestedAmount,
         BigDecimal totalAmount,
         Integer term,
-        BigDecimal monthlyPaymen,
+        BigDecimal monthlyPayment,
         BigDecimal rate,
         Boolean isInsuranceEnabled,
         Boolean isSalaryClient
