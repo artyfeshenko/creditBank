@@ -1,5 +1,6 @@
 package ru.feshenko.credit.bank.calculator.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,7 +22,7 @@ public class CalculatorController {
     private final CalculatorService calculatorService;
 
     @PostMapping("/offers")
-    public List<LoanOfferDto> getLoanOffers(@RequestBody LoanStatementRequestDto loanStatementRequestDto) {
+    public List<LoanOfferDto> getLoanOffers(@Valid @RequestBody LoanStatementRequestDto loanStatementRequestDto) {
         return calculatorService.generatedOffers(loanStatementRequestDto);
     }
 
