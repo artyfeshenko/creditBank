@@ -11,7 +11,7 @@ import ru.feshenko.credit.bank.calculator.dto.CreditDto;
 import ru.feshenko.credit.bank.calculator.dto.LoanOfferDto;
 import ru.feshenko.credit.bank.calculator.dto.LoanStatementRequestDto;
 import ru.feshenko.credit.bank.calculator.dto.ScoringDataDto;
-import ru.feshenko.credit.bank.calculator.service.CalculatorService;
+import ru.feshenko.credit.bank.calculator.service.CreditService;
 
 import java.util.List;
 
@@ -20,15 +20,15 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CalculatorController {
 
-    private final CalculatorService calculatorService;
+    private final CreditService creditService;
 
     @PostMapping("/offers")
     public ResponseEntity<List<LoanOfferDto>> getLoanOffers(@Valid @RequestBody LoanStatementRequestDto loanStatementRequestDto) {
-        return ResponseEntity.ok(calculatorService.generatedOffers(loanStatementRequestDto));
+        return ResponseEntity.ok(creditService.generatedOffers(loanStatementRequestDto));
     }
 
     @PostMapping("/calc")
     public CreditDto scoreAndCalculate(@RequestBody ScoringDataDto scoringDataDto) {
-        return calculatorService.scoreAndCalculateCredit(scoringDataDto);
+        return creditService.scoreAndCalculateCredit(scoringDataDto);
     }
 }
