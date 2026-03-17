@@ -2,6 +2,7 @@ package ru.feshenko.credit.bank.calculator.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,8 +23,8 @@ public class CalculatorController {
     private final CalculatorService calculatorService;
 
     @PostMapping("/offers")
-    public List<LoanOfferDto> getLoanOffers(@Valid @RequestBody LoanStatementRequestDto loanStatementRequestDto) {
-        return calculatorService.generatedOffers(loanStatementRequestDto);
+    public ResponseEntity<List<LoanOfferDto>> getLoanOffers(@Valid @RequestBody LoanStatementRequestDto loanStatementRequestDto) {
+        return ResponseEntity.ok(calculatorService.generatedOffers(loanStatementRequestDto));
     }
 
     @PostMapping("/calc")

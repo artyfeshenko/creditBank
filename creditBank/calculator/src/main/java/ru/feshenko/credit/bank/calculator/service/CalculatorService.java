@@ -8,6 +8,7 @@ import ru.feshenko.credit.bank.calculator.dto.LoanStatementRequestDto;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 
@@ -31,7 +32,7 @@ public class CalculatorService {
         offers.add(calculateLoneOffer(request, true, false));
         offers.add(calculateLoneOffer(request, false, true));
         offers.add(calculateLoneOffer(request, false, false));
-        return offers;
+        return offers.stream().sorted(Comparator.comparing(LoanOfferDto::rate).reversed()).toList();
     }
 
     public BigDecimal calculateMonthlyPayment(BigDecimal amount, BigDecimal rate, Integer term) {
@@ -44,10 +45,10 @@ public class CalculatorService {
         BigDecimal rate = baseRate;
         if (isInsuranceEnabled == true) {
             totalAmount = totalAmount.add(insurancePrice);
-            rate = baseRate.subtract(insuranceDiscount);
+            rate = rate.subtract(insuranceDiscount);
         }
         if (isSalaryClient == true) {
-            rate = baseRate.subtract(salaryClientDiscount);
+            rate = rate.subtract(salaryClientDiscount);
         }
         return new LoanOfferDto(UUID.randomUUID(), request.amount(), totalAmount, request.term(), calculateMonthlyPayment(totalAmount, rate, request.term()), rate, isInsuranceEnabled, isSalaryClient);
     }
