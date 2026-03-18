@@ -1,7 +1,7 @@
 package ru.feshenko.credit.bank.calculator.service;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.feshenko.credit.bank.calculator.dto.*;
 
@@ -13,20 +13,10 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class CreditService {
-    @Value("${loan.base.rate}")
-    private BigDecimal baseRate;
-
-    @Value("${loan.insurance.price}")
-    private BigDecimal insurancePrice;
-
-    @Value("${loan.insurance.discount}")
-    private BigDecimal insuranceDiscount;
-
-    @Value("${loan.salary-client.discount}")
-    private BigDecimal salaryClientDiscount;
 
     private final CalculatorService calculatorService;
 
@@ -38,14 +28,16 @@ public class CreditService {
         offers.add(calculateLoanOffer(request, true, false));
         offers.add(calculateLoanOffer(request, false, true));
         offers.add(calculateLoanOffer(request, false, false));
+        log.debug("количество кредитных предложений: {}", offers.size());
         return offers.stream().sorted(Comparator.comparing(LoanOfferDto::rate).reversed()).toList();
     }
 
     public LoanOfferDto calculateLoanOffer(LoanStatementRequestDto request, Boolean isInsuranceEnabled, Boolean isSalaryClient) {
         BigDecimal totalAmount = calculatorService.calculateAmount(isInsuranceEnabled, request.amount());
         BigDecimal rate = calculatorService.calculateRate(isInsuranceEnabled, isSalaryClient);
-
-        return new LoanOfferDto(UUID.randomUUID(), request.amount(), totalAmount, request.term(), calculatorService.calculateMonthlyPayment(totalAmount, rate, request.term()), rate, isInsuranceEnabled, isSalaryClient);
+        LoanOfferDto loanOffer = new LoanOfferDto(UUID.randomUUID(), request.amount(), totalAmount, request.term(), calculatorService.calculateMonthlyPayment(totalAmount, rate, request.term()), rate, isInsuranceEnabled, isSalaryClient);
+        log.debug("кредитное предложение: {}", loanOffer);
+        return loanOffer;
     }
 
     public CreditDto scoreAndCalculateCredit(ScoringDataDto dto) {
@@ -53,7 +45,9 @@ public class CreditService {
         BigDecimal rate = scoringService.calculateScoringRate(dto);
         BigDecimal monthlyPayment = calculatorService.calculateMonthlyPayment(totalAmount, rate, dto.term());
         BigDecimal psk = calculatorService.calculatePsk(monthlyPayment, dto.term(), totalAmount);
-        return new CreditDto(totalAmount, dto.term(), monthlyPayment, rate, psk, dto.isInsuranceEnabled(), dto.isSalaryClient(), calculatePaymentScheduleDto(totalAmount, dto.term(), rate, monthlyPayment));
+        CreditDto creditOffer = new CreditDto(totalAmount, dto.term(), monthlyPayment, rate, psk, dto.isInsuranceEnabled(), dto.isSalaryClient(), calculatePaymentScheduleDto(totalAmount, dto.term(), rate, monthlyPayment));
+        log.debug("полное кредитное предложение после скоринга:{}", creditOffer);
+        return creditOffer;
     }
 
     public List<PaymentScheduleElementDto> calculatePaymentScheduleDto(BigDecimal amount, Integer term, BigDecimal rate, BigDecimal monthlyPayment) {
@@ -69,6 +63,7 @@ public class CreditService {
             }
             paymentSchedule.add(new PaymentScheduleElementDto(i + 1, LocalDate.now().plusMonths(i + 1), monthlyPayment, interestPayment, debtPayment, remainingDebt));
         }
+        log.debug("размер графика платежей:{}, срок кредита:{}, ежемесячный платеж:{}, оставшая сумма кредита:{}", paymentSchedule.size(), term, monthlyPayment, remainingDebt);
         return paymentSchedule;
     }
 

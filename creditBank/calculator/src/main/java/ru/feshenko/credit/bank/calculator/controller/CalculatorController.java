@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,6 +19,7 @@ import ru.feshenko.credit.bank.calculator.service.CreditService;
 
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequestMapping("/calculator")
 @RequiredArgsConstructor
@@ -58,7 +60,10 @@ public class CalculatorController {
     })
     @PostMapping("/offers")
     public ResponseEntity<List<LoanOfferDto>> getLoanOffers(@Valid @RequestBody LoanStatementRequestDto loanStatementRequestDto) {
-        return ResponseEntity.ok(creditService.generatedOffers(loanStatementRequestDto));
+        log.info("/offers input values: {}", loanStatementRequestDto);
+        List<LoanOfferDto> loanOfferDtoList = creditService.generatedOffers(loanStatementRequestDto);
+        log.info("/offers output values: {}", loanOfferDtoList);
+        return ResponseEntity.ok(loanOfferDtoList);
     }
 
     @Operation(
@@ -92,7 +97,10 @@ public class CalculatorController {
             )
     })
     @PostMapping("/calc")
-    public CreditDto scoreAndCalculate(@RequestBody ScoringDataDto scoringDataDto) {
-        return creditService.scoreAndCalculateCredit(scoringDataDto);
+    public ResponseEntity<CreditDto> scoreAndCalculate(@RequestBody ScoringDataDto scoringDataDto) {
+        log.info("/cals input values: {}", scoringDataDto);
+        CreditDto creditDto = creditService.scoreAndCalculateCredit(scoringDataDto);
+        log.info("/cals output values: {}", scoringDataDto);
+        return ResponseEntity.ok(creditDto);
     }
 }
