@@ -83,7 +83,7 @@ public record ScoringDataDto(
         MaritalStatusEnum maritalStatus,
 
         @Schema(
-                description = "?",
+                description = "number of dependents",
                 example = "2"
         )
         Integer dependentAmount,
