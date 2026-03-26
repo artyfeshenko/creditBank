@@ -20,12 +20,11 @@ public class ScoringService {
     private final CalculatorService calculatorService;
 
     public BigDecimal calculateScoringRate(ScoringDataDto dto) {
-        validateScoringData(dto);
         BigDecimal rate = calculatorService.calculateRate(dto.isInsuranceEnabled(), dto.isSalaryClient());
-        rate = calculateEmploymentScoring(dto, rate);
-        rate = calculatePositionScoring(dto, rate);
-        rate = calculateMaritalStatusScoring(dto, rate);
-        rate = calculateGenderScoring(dto, rate);
+        rate = applyEmploymentScoring(dto, rate);
+        rate = applyPositionScoring(dto, rate);
+        rate = applyMaritalStatusScoring(dto, rate);
+        rate = applyGenderScoring(dto, rate);
         log.debug("итоговая ставка по кредиту: {}", rate);
         return rate;
     }
@@ -41,7 +40,7 @@ public class ScoringService {
             throw new ScoringDataException("the loan amount exceeds 24 salaries");
         }
 
-        int age = Period.between(dto.birthdate(), LocalDate.now()).getYears();
+        int age = calculateAge(dto);
         if (age < 20 || age > 65) {
             log.debug("отказ-возраст клиента меньше 20 или больше 65");
             throw new ScoringDataException("Your age is not suitable");
@@ -58,55 +57,57 @@ public class ScoringService {
         }
     }
 
-    public BigDecimal calculateEmploymentScoring(ScoringDataDto dto, BigDecimal rate) {
+    public BigDecimal applyEmploymentScoring(ScoringDataDto dto, BigDecimal rate) {
         BigDecimal finalRate = switch (dto.employment().employmentStatus()) {
             case SELF_EMPLOYED -> rate.add(BigDecimal.TWO);
             case BUSINESS_OWNER -> rate.add(BigDecimal.ONE);
             default -> rate;
         };
-        log.debug("итоговый процент: {}", finalRate);
+        log.debug("ставка после учёта занятости: {}", finalRate);
         return finalRate;
     }
 
-    public BigDecimal calculatePositionScoring(ScoringDataDto dto, BigDecimal rate) {
+    public BigDecimal applyPositionScoring(ScoringDataDto dto, BigDecimal rate) {
         BigDecimal finalRate = switch (dto.employment().position()) {
             case MIDDLE_MANAGER -> rate.add(BigDecimal.TWO);
             case TOP_MANAGER -> rate.add(BigDecimal.valueOf(3));
+            default -> rate;
         };
-        log.debug("итоговый процент: {}", finalRate);
+        log.debug("ставка после учеба позиции на работе: {}", finalRate);
         return finalRate;
     }
 
-    public BigDecimal calculateMaritalStatusScoring(ScoringDataDto dto, BigDecimal rate) {
+    public BigDecimal applyMaritalStatusScoring(ScoringDataDto dto, BigDecimal rate) {
         BigDecimal finalRate = switch (dto.maritalStatus()) {
             case MARRIED -> rate.subtract(BigDecimal.valueOf(3));
             case DIVORCED -> rate.add(BigDecimal.ONE);
             default -> rate;
         };
-        log.debug("итоговый процент: {}", finalRate);
+        log.debug("ставка после учета семейного положения: {}", finalRate);
         return finalRate;
     }
 
-    public BigDecimal calculateGenderScoring(ScoringDataDto dto, BigDecimal rate) {
-        int age = Period.between(dto.birthdate(), LocalDate.now()).getYears();
+    public int calculateAge(ScoringDataDto dto) {
+        return Period.between(dto.birthdate(), LocalDate.now()).getYears();
+    }
+
+
+    public BigDecimal applyGenderScoring(ScoringDataDto dto, BigDecimal rate) {
+        int age = calculateAge(dto);
+        BigDecimal finalRate;
         if (dto.gender() == GenderEnum.WOMAN && age >= 32 && age <= 60) {
-            BigDecimal finalRate = rate.subtract(BigDecimal.valueOf(3));
-            log.debug("итоговый процент: {}", finalRate);
-            return finalRate;
+            finalRate = rate.subtract(BigDecimal.valueOf(3));
+            log.debug("ставка после учёта пола и возраста (женщина 32-60): {}", finalRate);
+        } else if (dto.gender() == GenderEnum.MAN && age >= 30 && age <= 55) {
+            finalRate = rate.subtract(BigDecimal.valueOf(3));
+            log.debug("ставка после учёта пола и возраста (мужчина 30-55): {}", finalRate);
+        } else if (dto.gender() == GenderEnum.NOT_BINARY) {
+            finalRate = rate.add(BigDecimal.valueOf(7));
+            log.debug("ставка после учёта пола (небинарный): {}", finalRate);
+        } else {
+            finalRate = rate;
+            log.debug("ставка после учёта пола и возраста: {}", finalRate);
         }
-
-        if (dto.gender() == GenderEnum.MAN && age >= 30 && age <= 55) {
-            BigDecimal finalRate = rate.subtract(BigDecimal.valueOf(3));
-            log.debug("итоговый процент: {}", finalRate);
-            return finalRate;
-        }
-
-        if (dto.gender() == GenderEnum.NOT_BINARY) {
-            BigDecimal finalRate = rate.add(BigDecimal.valueOf(7));
-            log.debug("итоговый процент: {}", finalRate);
-            return finalRate;
-        }
-        log.debug("итоговый процент: {}", rate);
-        return rate;
+        return finalRate;
     }
 }

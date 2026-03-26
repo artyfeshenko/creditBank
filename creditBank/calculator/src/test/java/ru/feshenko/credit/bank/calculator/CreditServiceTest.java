@@ -112,8 +112,8 @@ public class CreditServiceTest {
     }
 
     @Test
-    void testGeneratedOffers() {
-        List<LoanOfferDto> actual = creditService.generatedOffers(buildRequestDto());
+    void testGenerateOffers() {
+        List<LoanOfferDto> actual = creditService.generateOffers(buildRequestDto());
         assertEquals(4, actual.size());
     }
 

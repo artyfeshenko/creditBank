@@ -94,7 +94,7 @@ public class ScoringServiceTest {
     void testEmploymentScoring_selfEmployed() {
         ScoringDataDto dto = buildDto();
         BigDecimal baseRate = BigDecimal.valueOf(15);
-        BigDecimal result = scoringService.calculateEmploymentScoring(dto, baseRate);
+        BigDecimal result = scoringService.applyEmploymentScoring(dto, baseRate);
         assertEquals(BigDecimal.valueOf(17), result);
     }
 
@@ -105,7 +105,7 @@ public class ScoringServiceTest {
                 ), "123456789", false, false
         );
         BigDecimal baseRate = BigDecimal.valueOf(15);
-        BigDecimal result = scoringService.calculateEmploymentScoring(dto, baseRate);
+        BigDecimal result = scoringService.applyEmploymentScoring(dto, baseRate);
         assertEquals(BigDecimal.valueOf(16), result);
     }
 
@@ -113,7 +113,7 @@ public class ScoringServiceTest {
     void testPositionScoring_TopManager() {
         ScoringDataDto dto = buildDto();
         BigDecimal baseRate = BigDecimal.valueOf(15);
-        BigDecimal result = scoringService.calculatePositionScoring(dto, baseRate);
+        BigDecimal result = scoringService.applyPositionScoring(dto, baseRate);
         assertEquals(BigDecimal.valueOf(18), result);
     }
 
@@ -124,7 +124,7 @@ public class ScoringServiceTest {
                 ), "123456789", false, false
         );
         BigDecimal baseRate = BigDecimal.valueOf(15);
-        BigDecimal result = scoringService.calculatePositionScoring(dto, baseRate);
+        BigDecimal result = scoringService.applyPositionScoring(dto, baseRate);
         assertEquals(BigDecimal.valueOf(17), result);
     }
 
@@ -135,7 +135,7 @@ public class ScoringServiceTest {
                 ), "123456789", false, false
         );
         BigDecimal baseRate = BigDecimal.valueOf(15);
-        BigDecimal result = scoringService.calculateMaritalStatusScoring(dto, baseRate);
+        BigDecimal result = scoringService.applyMaritalStatusScoring(dto, baseRate);
         assertEquals(BigDecimal.valueOf(12), result);
     }
 
@@ -143,7 +143,7 @@ public class ScoringServiceTest {
     void testMaritalStatusScoring_Divorced() {
         ScoringDataDto dto = buildDto();
         BigDecimal baseRate = BigDecimal.valueOf(15);
-        BigDecimal result = scoringService.calculateMaritalStatusScoring(dto, baseRate);
+        BigDecimal result = scoringService.applyMaritalStatusScoring(dto, baseRate);
         assertEquals(BigDecimal.valueOf(16), result);
     }
 
@@ -151,7 +151,7 @@ public class ScoringServiceTest {
     void testGenderScoring_NonBinary() {
         ScoringDataDto dto = buildDto();
         BigDecimal baseRate = BigDecimal.valueOf(15);
-        BigDecimal result = scoringService.calculateGenderScoring(dto, baseRate);
+        BigDecimal result = scoringService.applyGenderScoring(dto, baseRate);
         assertEquals(BigDecimal.valueOf(22), result);
     }
 
@@ -162,7 +162,7 @@ public class ScoringServiceTest {
                 ), "123456789", false, false
         );
         BigDecimal baseRate = BigDecimal.valueOf(15);
-        BigDecimal result = scoringService.calculateGenderScoring(dto, baseRate);
+        BigDecimal result = scoringService.applyGenderScoring(dto, baseRate);
         assertEquals(BigDecimal.valueOf(12), result);
     }
 
@@ -173,7 +173,7 @@ public class ScoringServiceTest {
                 ), "123456789", false, false
         );
         BigDecimal baseRate = BigDecimal.valueOf(15);
-        BigDecimal result = scoringService.calculateGenderScoring(dto, baseRate);
+        BigDecimal result = scoringService.applyGenderScoring(dto, baseRate);
         assertEquals(BigDecimal.valueOf(12), result);
     }
 }

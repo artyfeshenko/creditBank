@@ -2,7 +2,7 @@ package ru.feshenko.credit.bank.calculator;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.test.util.ReflectionTestUtils;
+import ru.feshenko.credit.bank.calculator.config.LoanProperties;
 import ru.feshenko.credit.bank.calculator.service.CalculatorService;
 
 import java.math.BigDecimal;
@@ -12,14 +12,23 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class CalculatorServiceTest {
     private CalculatorService calculatorService;
+    private LoanProperties loanProperties;
 
     @BeforeEach
     void setUp() {
-        calculatorService = new CalculatorService();
-        ReflectionTestUtils.setField(calculatorService, "baseRate", new BigDecimal("15.0"));
-        ReflectionTestUtils.setField(calculatorService, "insurancePrice", new BigDecimal("50000"));
-        ReflectionTestUtils.setField(calculatorService, "insuranceDiscount", new BigDecimal("3.0"));
-        ReflectionTestUtils.setField(calculatorService, "salaryClientDiscount", new BigDecimal("1"));
+        loanProperties = new LoanProperties();
+        loanProperties.setBaseRate(new BigDecimal("15.0"));
+
+        LoanProperties.Insurance insurance = new LoanProperties.Insurance();
+        insurance.setPrice(new BigDecimal("50000"));
+        insurance.setDiscount(new BigDecimal("3.0"));
+        loanProperties.setInsurance(insurance);
+
+        LoanProperties.SalaryClient salaryClient = new LoanProperties.SalaryClient();
+        salaryClient.setDiscount(new BigDecimal("1"));
+        loanProperties.setSalaryClient(salaryClient);
+
+        calculatorService = new CalculatorService(loanProperties);
     }
 
     @Test

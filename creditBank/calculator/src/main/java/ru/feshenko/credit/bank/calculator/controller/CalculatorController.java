@@ -14,7 +14,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import ru.feshenko.credit.bank.calculator.dto.*;
+import ru.feshenko.credit.bank.calculator.dto.CreditDto;
+import ru.feshenko.credit.bank.calculator.dto.ErrorResponse;
+import ru.feshenko.credit.bank.calculator.dto.LoanOfferDto;
+import ru.feshenko.credit.bank.calculator.dto.LoanStatementRequestDto;
+import ru.feshenko.credit.bank.calculator.dto.ScoringDataDto;
 import ru.feshenko.credit.bank.calculator.service.CreditService;
 
 import java.util.List;
@@ -60,8 +64,8 @@ public class CalculatorController {
     })
     @PostMapping("/offers")
     public ResponseEntity<List<LoanOfferDto>> getLoanOffers(@Valid @RequestBody LoanStatementRequestDto loanStatementRequestDto) {
-        log.info("/offers input values: {}", loanStatementRequestDto);
-        List<LoanOfferDto> loanOfferDtoList = creditService.generatedOffers(loanStatementRequestDto);
+        log.info("/offers input values: amount={}, term={}", loanStatementRequestDto.amount(), loanStatementRequestDto.term());
+        List<LoanOfferDto> loanOfferDtoList = creditService.generateOffers(loanStatementRequestDto);
         log.info("/offers output values: {}", loanOfferDtoList);
         return ResponseEntity.ok(loanOfferDtoList);
     }
@@ -98,9 +102,13 @@ public class CalculatorController {
     })
     @PostMapping("/calc")
     public ResponseEntity<CreditDto> scoreAndCalculate(@RequestBody ScoringDataDto scoringDataDto) {
-        log.info("/cals input values: {}", scoringDataDto);
+        log.info("calc input values: amount={}, term={}, dependentAmount={}, isInsuranceEnabled={}, isSalaryClient={}",
+                scoringDataDto.amount(), scoringDataDto.term(), scoringDataDto.dependentAmount(),
+                scoringDataDto.isInsuranceEnabled(), scoringDataDto.isSalaryClient());
         CreditDto creditDto = creditService.scoreAndCalculateCredit(scoringDataDto);
-        log.info("/cals output values: {}", scoringDataDto);
+        log.info("calc output values: amount={}, term={}, rate={}, monthlyPayment={}",
+                creditDto.amount(), creditDto.term(),
+                creditDto.rate(), creditDto.monthlyPayment());
         return ResponseEntity.ok(creditDto);
     }
 }
