@@ -4,12 +4,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.feshenko.credit.bank.calculator.config.LoanProperties;
-import ru.feshenko.credit.bank.calculator.util.CreditCalculationConstants;
-
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-
-import static ru.feshenko.credit.bank.calculator.util.CreditCalculationConstants.*;
+import static ru.feshenko.credit.bank.calculator.util.CreditCalculationConstants.DECIMAL_SCALE;
+import static ru.feshenko.credit.bank.calculator.util.CreditCalculationConstants.MONTHS_IN_YEAR;
+import static ru.feshenko.credit.bank.calculator.util.CreditCalculationConstants.PERCENT_DIVISOR;
+import static ru.feshenko.credit.bank.calculator.util.CreditCalculationConstants.ROUNDING_SCALE;
 
 @Slf4j
 @Service
