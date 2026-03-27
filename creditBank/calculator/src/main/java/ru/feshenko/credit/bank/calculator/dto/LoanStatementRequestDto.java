@@ -1,7 +1,11 @@
 package ru.feshenko.credit.bank.calculator.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import ru.feshenko.credit.bank.calculator.validation.Adult;
 
 import java.math.BigDecimal;

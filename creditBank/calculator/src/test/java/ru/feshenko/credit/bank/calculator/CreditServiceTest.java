@@ -2,7 +2,12 @@ package ru.feshenko.credit.bank.calculator;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import ru.feshenko.credit.bank.calculator.dto.*;
+import ru.feshenko.credit.bank.calculator.dto.CreditDto;
+import ru.feshenko.credit.bank.calculator.dto.EmploymentDto;
+import ru.feshenko.credit.bank.calculator.dto.LoanOfferDto;
+import ru.feshenko.credit.bank.calculator.dto.LoanStatementRequestDto;
+import ru.feshenko.credit.bank.calculator.dto.PaymentScheduleElementDto;
+import ru.feshenko.credit.bank.calculator.dto.ScoringDataDto;
 import ru.feshenko.credit.bank.calculator.enums.EmploymentStatusEnum;
 import ru.feshenko.credit.bank.calculator.enums.GenderEnum;
 import ru.feshenko.credit.bank.calculator.enums.MaritalStatusEnum;
