@@ -42,7 +42,7 @@ public record ScoringDataDto(
 
         @Schema(
                 description = "Gender",
-                example = "MALE"
+                example = "MAN"
         )
         GenderEnum gender,
 

@@ -11,7 +11,7 @@ public record EmploymentDto(
 
         @Schema(
                 description = "Employment status",
-                example = "UNEMPLOYED"
+                example = "SELF_EMPLOYED"
         )
         EmploymentStatusEnum employmentStatus,
 

@@ -18,6 +18,17 @@ import java.time.Period;
 public class ScoringService {
 
     private final CalculatorService calculatorService;
+    private static final int WOMAN_MIN_AGE = 32;
+    private static final int WOMAN_MAX_AGE = 60;
+    private static final int MAN_MIN_AGE = 30;
+    private static final int MAN_MAX_AGE = 55;
+    private static final int SALARY_MONTHS = 24;
+    private static final int MIN_AGE = 20;
+    private static final int MAX_AGE = 65;
+    private static final int MIN_TOTAL_WORK_EXPERIENCE_MONTHS = 18;
+    private static final int MIN_CURRENT_WORK_EXPERIENCE_MONTHS = 3;
+    private static final BigDecimal WOMAN_MAN_RATE_REDUCTION = BigDecimal.valueOf(3);
+    private static final BigDecimal NON_BINARY_RATE_INCREASE = BigDecimal.valueOf(7);
 
     public BigDecimal calculateScoringRate(ScoringDataDto dto) {
         BigDecimal rate = calculatorService.calculateRate(dto.isInsuranceEnabled(), dto.isSalaryClient());
@@ -35,24 +46,24 @@ public class ScoringService {
             throw new ScoringDataException("you are unemployed");
         }
 
-        if (dto.amount().compareTo(dto.employment().salary().multiply(BigDecimal.valueOf(24))) > 0) {
-            log.debug("отказ-зарплата клиента меньше суммы всех зарплат за 24 месяца");
-            throw new ScoringDataException("the loan amount exceeds 24 salaries");
+        if (dto.amount().compareTo(dto.employment().salary().multiply(BigDecimal.valueOf(SALARY_MONTHS))) > 0) {
+            log.debug("отказ-зарплата клиента меньше суммы всех зарплат за {} месяца", SALARY_MONTHS);
+            throw new ScoringDataException("the loan amount exceeds" + SALARY_MONTHS + "salaries");
         }
 
         int age = calculateAge(dto);
-        if (age < 20 || age > 65) {
-            log.debug("отказ-возраст клиента меньше 20 или больше 65");
+        if (age < MIN_AGE || age > MAX_AGE) {
+            log.debug("отказ-возраст клиента меньше {} или больше {}", MIN_AGE, MAX_AGE);
             throw new ScoringDataException("Your age is not suitable");
         }
 
-        if (dto.employment().workExperienceTotal() < 18) {
-            log.debug("отказ-общий стаж клиента меньше 18 месяцев");
+        if (dto.employment().workExperienceTotal() < MIN_TOTAL_WORK_EXPERIENCE_MONTHS) {
+            log.debug("отказ-общий стаж клиента меньше {} месяцев", MIN_TOTAL_WORK_EXPERIENCE_MONTHS);
             throw new ScoringDataException("your work experience is too short");
         }
 
-        if (dto.employment().workExperienceCurrent() < 3) {
-            log.debug("отказ-текущий стаж клиента меньше 3 месяцев");
+        if (dto.employment().workExperienceCurrent() < MIN_CURRENT_WORK_EXPERIENCE_MONTHS) {
+            log.debug("отказ-текущий стаж клиента меньше {} месяцев", MIN_CURRENT_WORK_EXPERIENCE_MONTHS);
             throw new ScoringDataException("your work experience is too short");
         }
     }
@@ -95,14 +106,14 @@ public class ScoringService {
     public BigDecimal applyGenderScoring(ScoringDataDto dto, BigDecimal rate) {
         int age = calculateAge(dto);
         BigDecimal finalRate;
-        if (dto.gender() == GenderEnum.WOMAN && age >= 32 && age <= 60) {
-            finalRate = rate.subtract(BigDecimal.valueOf(3));
-            log.debug("ставка после учёта пола и возраста (женщина 32-60): {}", finalRate);
-        } else if (dto.gender() == GenderEnum.MAN && age >= 30 && age <= 55) {
-            finalRate = rate.subtract(BigDecimal.valueOf(3));
-            log.debug("ставка после учёта пола и возраста (мужчина 30-55): {}", finalRate);
+        if (dto.gender() == GenderEnum.WOMAN && age >= WOMAN_MIN_AGE && age <= WOMAN_MAX_AGE) {
+            finalRate = rate.subtract(WOMAN_MAN_RATE_REDUCTION);
+            log.debug("ставка после учёта пола и возраста (женщина {}-{}): {}", WOMAN_MIN_AGE, WOMAN_MAX_AGE, finalRate);
+        } else if (dto.gender() == GenderEnum.MAN && age >= MAN_MIN_AGE && age <= MAN_MAX_AGE) {
+            finalRate = rate.subtract(WOMAN_MAN_RATE_REDUCTION);
+            log.debug("ставка после учёта пола и возраста (мужчина {}-{}): {}", MAN_MIN_AGE, MAN_MAX_AGE, finalRate);
         } else if (dto.gender() == GenderEnum.NOT_BINARY) {
-            finalRate = rate.add(BigDecimal.valueOf(7));
+            finalRate = rate.add(NON_BINARY_RATE_INCREASE);
             log.debug("ставка после учёта пола (небинарный): {}", finalRate);
         } else {
             finalRate = rate;
