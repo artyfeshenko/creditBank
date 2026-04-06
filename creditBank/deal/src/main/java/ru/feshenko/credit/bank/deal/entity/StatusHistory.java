@@ -1,6 +1,5 @@
 package ru.feshenko.credit.bank.deal.entity;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import lombok.AllArgsConstructor;
