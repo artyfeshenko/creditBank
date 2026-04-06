@@ -46,7 +46,7 @@ public class CreditServiceTest {
     }
 
     private ScoringDataDto buildScoringDataDto() {
-        return new ScoringDataDto(BigDecimal.valueOf(500000), 6, "sasha", "mironov", "mickhailovich", GenderEnum.NOT_BINARY, LocalDate.of(2003,11,1),
+        return new ScoringDataDto(BigDecimal.valueOf(500000), 6, "sasha", "mironov", "mickhailovich", GenderEnum.NON_BINARY, LocalDate.of(2003,11,1),
                 "4202", "168138", LocalDate.of(2017,2,2), "ROMADIN MVD", MaritalStatusEnum.DIVORCED, 5,
                 new EmploymentDto(EmploymentStatusEnum.SELF_EMPLOYED, "12341345", BigDecimal.valueOf(60000), PositionEnum.TOP_MANAGER, 20, 5), "sdfsdg", false, false);
     }

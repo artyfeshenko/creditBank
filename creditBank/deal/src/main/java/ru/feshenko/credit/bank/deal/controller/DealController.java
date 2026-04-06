@@ -9,6 +9,7 @@ import ru.feshenko.credit.bank.deal.dto.LoanStatementRequestDto;
 import ru.feshenko.credit.bank.deal.service.DealService;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/deal")
@@ -29,6 +30,6 @@ public class DealController {
 
     @PostMapping("/calculate/{statementId}")
     public void fullLoanCalculation(@RequestBody FinishRegistrationRequestDto finishRegistrationRequestDto, @PathVariable String statementId) {
-        dealService.completeRegistrationAndCalculateCredit(finishRegistrationRequestDto, statementId);
+        dealService.completeRegistrationAndCalculateCredit(finishRegistrationRequestDto, UUID.fromString(statementId));
     }
 }

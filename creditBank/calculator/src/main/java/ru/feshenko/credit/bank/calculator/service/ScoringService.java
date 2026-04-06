@@ -106,13 +106,13 @@ public class ScoringService {
     public BigDecimal applyGenderScoring(ScoringDataDto dto, BigDecimal rate) {
         int age = calculateAge(dto);
         BigDecimal finalRate;
-        if (dto.gender() == GenderEnum.WOMAN && age >= WOMAN_MIN_AGE && age <= WOMAN_MAX_AGE) {
+        if (dto.gender() == GenderEnum.FEMALE && age >= WOMAN_MIN_AGE && age <= WOMAN_MAX_AGE) {
             finalRate = rate.subtract(WOMAN_MAN_RATE_REDUCTION);
             log.debug("ставка после учёта пола и возраста (женщина {}-{}): {}", WOMAN_MIN_AGE, WOMAN_MAX_AGE, finalRate);
-        } else if (dto.gender() == GenderEnum.MAN && age >= MAN_MIN_AGE && age <= MAN_MAX_AGE) {
+        } else if (dto.gender() == GenderEnum.MALE && age >= MAN_MIN_AGE && age <= MAN_MAX_AGE) {
             finalRate = rate.subtract(WOMAN_MAN_RATE_REDUCTION);
             log.debug("ставка после учёта пола и возраста (мужчина {}-{}): {}", MAN_MIN_AGE, MAN_MAX_AGE, finalRate);
-        } else if (dto.gender() == GenderEnum.NOT_BINARY) {
+        } else if (dto.gender() == GenderEnum.NON_BINARY) {
             finalRate = rate.add(NON_BINARY_RATE_INCREASE);
             log.debug("ставка после учёта пола (небинарный): {}", finalRate);
         } else {
