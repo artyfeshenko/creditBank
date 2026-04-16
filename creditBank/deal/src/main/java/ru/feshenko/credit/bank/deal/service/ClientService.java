@@ -15,17 +15,14 @@ public class ClientService {
     private final ClientRepository clientRepository;
     private final ClientMapper clientMapper;
 
-    public Client createClient(LoanStatementRequestDto loanStatementRequestDto) {
-        return clientMapper.toClient(loanStatementRequestDto);
-    }
-
-    public Client saveClient(Client client) {
+    public Client updateAndSaveClient(Client client, FinishRegistrationRequestDto requestDto) {
+        clientMapper.updateClient(client, requestDto);
         return clientRepository.save(client);
     }
 
-    public Client updateClient(Client client, FinishRegistrationRequestDto requestDto) {
-        clientMapper.updateClient(client, requestDto);
-        return client;
+    public Client createAndSaveClient(LoanStatementRequestDto dto) {
+        Client client = clientMapper.toClient(dto);
+        return clientRepository.save(client);
     }
 
 }

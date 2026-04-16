@@ -61,7 +61,7 @@ public class DealController {
     })
     @PostMapping("/statement")
     public List<LoanOfferDto> calculateLoanTerms(@RequestBody LoanStatementRequestDto loanStatementRequestDto) {
-        log.info("POST /deal/statement - request: {}", loanStatementRequestDto);
+        log.info("/offers input values: amount={}, term={}", loanStatementRequestDto.amount(), loanStatementRequestDto.term());
         List<LoanOfferDto> response = dealService.generateLoanOffers(loanStatementRequestDto);
         log.info("POST /deal/statement - response: {} offers", response.size());
         return response;
@@ -116,9 +116,9 @@ public class DealController {
             )
     })
     @PostMapping("/calculate/{statementId}")
-    public void fullLoanCalculation(@RequestBody FinishRegistrationRequestDto finishRegistrationRequestDto, @PathVariable String statementId) {
+    public void fullLoanCalculation(@RequestBody FinishRegistrationRequestDto finishRegistrationRequestDto, @PathVariable UUID statementId) {
         log.info("POST /deal/calculate/{} - request: {}", statementId, finishRegistrationRequestDto);
-        dealService.completeRegistrationAndCalculateCredit(finishRegistrationRequestDto, UUID.fromString(statementId));
+        dealService.completeRegistrationAndCalculateCredit(finishRegistrationRequestDto, statementId);
         log.info("POST /deal/calculate/{} - completed", statementId);
     }
 }

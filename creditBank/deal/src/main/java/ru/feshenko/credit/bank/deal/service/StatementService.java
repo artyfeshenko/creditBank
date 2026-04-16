@@ -40,10 +40,14 @@ public class StatementService {
         return statementRepository.findById(id).orElseThrow(() -> new StatementNotFoundException("statement with id %s not found".formatted(id)));
     }
 
-    public Statement updateStatus(Statement statement, ApplicationStatus status, ChangeType changeType) {
+    public Statement setStatus(Statement statement, ApplicationStatus status, ChangeType changeType) {
         statement.setStatus(status);
         StatusHistory statusHistory = new StatusHistory(status, LocalDateTime.now(), changeType);
         statement.getStatusHistory().add(statusHistory);
         return statement;
+    }
+
+    public Statement createAndSaveStatement(Client client) {
+        return saveStatement(createStatement(client));
     }
 }

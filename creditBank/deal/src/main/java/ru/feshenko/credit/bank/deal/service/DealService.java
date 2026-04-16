@@ -2,6 +2,7 @@ package ru.feshenko.credit.bank.deal.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.feshenko.credit.bank.deal.client.CalculatorClient;
 import ru.feshenko.credit.bank.deal.dto.CreditDto;
 import ru.feshenko.credit.bank.deal.dto.FinishRegistrationRequestDto;
@@ -31,11 +32,10 @@ public class DealService {
     private final ScoringMapper scoringMapper;
     private final CreditMapper creditMapper;
 
+    @Transactional
     public List<LoanOfferDto> generateLoanOffers(LoanStatementRequestDto loanStatementRequestDto) {
-        Client client = clientService.createClient(loanStatementRequestDto);
-        client = clientService.saveClient(client);
-        Statement statement = statementService.createStatement(client);
-        statement = statementService.saveStatement(statement);
+        Client client = clientService.createAndSaveClient(loanStatementRequestDto);
+        Statement statement = statementService.createAndSaveStatement(client);
 
         List<LoanOfferDto> offers = calculatorClient.offers(loanStatementRequestDto);
         for (LoanOfferDto offer : offers) {
@@ -45,19 +45,20 @@ public class DealService {
     }
 
 
+    @Transactional
     public void selectLoanOffer(LoanOfferDto loanOfferDto) {
         Statement statement = statementService.findStatement(loanOfferDto.getStatementId());
-        statement = statementService.updateStatus(statement, ApplicationStatus.APPROVED, ChangeType.AUTOMATIC);
+        statement = statementService.setStatus(statement, ApplicationStatus.APPROVED, ChangeType.AUTOMATIC);
         statement.setAppliedOffer(loanOfferDto);
         statementService.saveStatement(statement);
     }
 
+    @Transactional
     public void completeRegistrationAndCalculateCredit(FinishRegistrationRequestDto requestDto, UUID statementId) {
         Statement statement = statementService.findStatement(statementId);
         LoanOfferDto appliedOffer = statement.getAppliedOffer();
         Client client = statement.getClient();
-        client = clientService.updateClient(client, requestDto);
-        client = clientService.saveClient(client);
+        client = clientService.updateAndSaveClient(client, requestDto);
 
         ScoringDataDto scoringDataDto = scoringMapper.toScoringDataDto(requestDto, client, appliedOffer);
 
@@ -67,7 +68,7 @@ public class DealService {
         creditRepository.save(credit);
 
         statement.setCredit(credit);
-        statement = statementService.updateStatus(statement, ApplicationStatus.CC_APPROVED, ChangeType.AUTOMATIC);
+        statement = statementService.setStatus(statement, ApplicationStatus.CC_APPROVED, ChangeType.AUTOMATIC);
         statementService.saveStatement(statement);
     }
 }

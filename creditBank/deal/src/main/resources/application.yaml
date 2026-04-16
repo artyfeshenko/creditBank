@@ -4,7 +4,7 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/deal_db
     username: postgres
-    password: postgres
+    password: 1979
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
@@ -12,3 +12,5 @@ spring:
     show-sql: true
 server:
   port: 8081
+calculator:
+  base-url: http://localhost:8080/calculator
