@@ -25,7 +25,7 @@ public class ScoringServiceTest {
     private CalculatorService calculatorService;
 
     private ScoringDataDto buildDto() {
-        return new ScoringDataDto(BigDecimal.valueOf(500000), 6, "sano", "mironov", "michailovich", GenderEnum.NOT_BINARY, LocalDate.of(2003, 1, 1), "4202", "168138", LocalDate.of(2017, 2, 2), "ROMADIN MVD", MaritalStatusEnum.DIVORCED, 5,
+        return new ScoringDataDto(BigDecimal.valueOf(500000), 6, "sano", "mironov", "michailovich", GenderEnum.NON_BINARY, LocalDate.of(2003, 1, 1), "4202", "168138", LocalDate.of(2017, 2, 2), "ROMADIN MVD", MaritalStatusEnum.DIVORCED, 5,
                 new EmploymentDto(EmploymentStatusEnum.SELF_EMPLOYED, "12341345", BigDecimal.valueOf(60000), PositionEnum.TOP_MANAGER, 20, 5
                 ), "123456789", false, false
         );
@@ -47,7 +47,7 @@ public class ScoringServiceTest {
 
     @Test
     void testValidateScoringDataWhenUnemployed() {
-        ScoringDataDto dto = new ScoringDataDto(BigDecimal.valueOf(500000), 6, "sano", "mironov", "michailovich", GenderEnum.NOT_BINARY, LocalDate.of(2003, 1, 1), "4202", "168138", LocalDate.of(2017, 2, 2), "ROMADIN MVD", MaritalStatusEnum.DIVORCED, 5,
+        ScoringDataDto dto = new ScoringDataDto(BigDecimal.valueOf(500000), 6, "sano", "mironov", "michailovich", GenderEnum.NON_BINARY, LocalDate.of(2003, 1, 1), "4202", "168138", LocalDate.of(2017, 2, 2), "ROMADIN MVD", MaritalStatusEnum.DIVORCED, 5,
                 new EmploymentDto(EmploymentStatusEnum.UNEMPLOYED, "12341345", BigDecimal.valueOf(60000), PositionEnum.TOP_MANAGER, 20, 5
                 ), "123456789", false, false
         );
@@ -56,7 +56,7 @@ public class ScoringServiceTest {
 
     @Test
     void testValidateScoringDataWhenAgeNotSuitable() {
-        ScoringDataDto dto = new ScoringDataDto(BigDecimal.valueOf(500000), 6, "sano", "mironov", "michailovich", GenderEnum.NOT_BINARY, LocalDate.of(2024, 1, 1), "4202", "168138", LocalDate.of(2017, 2, 2), "ROMADIN MVD", MaritalStatusEnum.DIVORCED, 5,
+        ScoringDataDto dto = new ScoringDataDto(BigDecimal.valueOf(500000), 6, "sano", "mironov", "michailovich", GenderEnum.NON_BINARY, LocalDate.of(2024, 1, 1), "4202", "168138", LocalDate.of(2017, 2, 2), "ROMADIN MVD", MaritalStatusEnum.DIVORCED, 5,
                 new EmploymentDto(EmploymentStatusEnum.SELF_EMPLOYED, "12341345", BigDecimal.valueOf(60000), PositionEnum.TOP_MANAGER, 20, 5
                 ), "123456789", false, false
         );
@@ -65,7 +65,7 @@ public class ScoringServiceTest {
 
     @Test
     void testValidateScoringDataWhenSalaryAmountSmall() {
-        ScoringDataDto dto = new ScoringDataDto(BigDecimal.valueOf(500000), 6, "sano", "mironov", "michailovich", GenderEnum.NOT_BINARY, LocalDate.of(2001, 1, 1), "4202", "168138", LocalDate.of(2017, 2, 2), "ROMADIN MVD", MaritalStatusEnum.DIVORCED, 5,
+        ScoringDataDto dto = new ScoringDataDto(BigDecimal.valueOf(500000), 6, "sano", "mironov", "michailovich", GenderEnum.NON_BINARY, LocalDate.of(2001, 1, 1), "4202", "168138", LocalDate.of(2017, 2, 2), "ROMADIN MVD", MaritalStatusEnum.DIVORCED, 5,
                 new EmploymentDto(EmploymentStatusEnum.SELF_EMPLOYED, "12341345", BigDecimal.valueOf(5000), PositionEnum.TOP_MANAGER, 20, 5
                 ), "123456789", false, false
         );
@@ -74,7 +74,7 @@ public class ScoringServiceTest {
 
     @Test
     void testValidateScoringDataWhenTotalLengthServiceSmall() {
-        ScoringDataDto dto = new ScoringDataDto(BigDecimal.valueOf(500000), 6, "sano", "mironov", "michailovich", GenderEnum.NOT_BINARY, LocalDate.of(2001, 1, 1), "4202", "168138", LocalDate.of(2017, 2, 2), "ROMADIN MVD", MaritalStatusEnum.DIVORCED, 5,
+        ScoringDataDto dto = new ScoringDataDto(BigDecimal.valueOf(500000), 6, "sano", "mironov", "michailovich", GenderEnum.NON_BINARY, LocalDate.of(2001, 1, 1), "4202", "168138", LocalDate.of(2017, 2, 2), "ROMADIN MVD", MaritalStatusEnum.DIVORCED, 5,
                 new EmploymentDto(EmploymentStatusEnum.SELF_EMPLOYED, "12341345", BigDecimal.valueOf(5000), PositionEnum.TOP_MANAGER, 15, 5
                 ), "123456789", false, false
         );
@@ -83,7 +83,7 @@ public class ScoringServiceTest {
 
     @Test
     void testValidateScoringDataWhenCurrentLengthServiceSmall() {
-        ScoringDataDto dto = new ScoringDataDto(BigDecimal.valueOf(500000), 6, "sano", "mironov", "michailovich", GenderEnum.NOT_BINARY, LocalDate.of(2001, 1, 1), "4202", "168138", LocalDate.of(2017, 2, 2), "ROMADIN MVD", MaritalStatusEnum.DIVORCED, 5,
+        ScoringDataDto dto = new ScoringDataDto(BigDecimal.valueOf(500000), 6, "sano", "mironov", "michailovich", GenderEnum.NON_BINARY, LocalDate.of(2001, 1, 1), "4202", "168138", LocalDate.of(2017, 2, 2), "ROMADIN MVD", MaritalStatusEnum.DIVORCED, 5,
                 new EmploymentDto(EmploymentStatusEnum.SELF_EMPLOYED, "12341345", BigDecimal.valueOf(5000), PositionEnum.TOP_MANAGER, 20, 2
                 ), "123456789", false, false
         );
@@ -100,7 +100,7 @@ public class ScoringServiceTest {
 
     @Test
     void testEmploymentScoring_BusinessOwner() {
-        ScoringDataDto dto = new ScoringDataDto(BigDecimal.valueOf(500000), 6, "sano", "mironov", "michailovich", GenderEnum.NOT_BINARY, LocalDate.of(2001, 1, 1), "4202", "168138", LocalDate.of(2017, 2, 2), "ROMADIN MVD", MaritalStatusEnum.DIVORCED, 5,
+        ScoringDataDto dto = new ScoringDataDto(BigDecimal.valueOf(500000), 6, "sano", "mironov", "michailovich", GenderEnum.NON_BINARY, LocalDate.of(2001, 1, 1), "4202", "168138", LocalDate.of(2017, 2, 2), "ROMADIN MVD", MaritalStatusEnum.DIVORCED, 5,
                 new EmploymentDto(EmploymentStatusEnum.BUSINESS_OWNER, "12341345", BigDecimal.valueOf(5000), PositionEnum.TOP_MANAGER, 20, 2
                 ), "123456789", false, false
         );
@@ -119,7 +119,7 @@ public class ScoringServiceTest {
 
     @Test
     void testPositionScoring_MiddleManager() {
-        ScoringDataDto dto = new ScoringDataDto(BigDecimal.valueOf(500000), 6, "sano", "mironov", "michailovich", GenderEnum.NOT_BINARY, LocalDate.of(2003, 1, 1), "4202", "168138", LocalDate.of(2017, 2, 2), "ROMADIN MVD", MaritalStatusEnum.DIVORCED, 5,
+        ScoringDataDto dto = new ScoringDataDto(BigDecimal.valueOf(500000), 6, "sano", "mironov", "michailovich", GenderEnum.NON_BINARY, LocalDate.of(2003, 1, 1), "4202", "168138", LocalDate.of(2017, 2, 2), "ROMADIN MVD", MaritalStatusEnum.DIVORCED, 5,
                 new EmploymentDto(EmploymentStatusEnum.SELF_EMPLOYED, "12341345", BigDecimal.valueOf(60000), PositionEnum.MIDDLE_MANAGER, 20, 5
                 ), "123456789", false, false
         );
@@ -130,7 +130,7 @@ public class ScoringServiceTest {
 
     @Test
     void testMaritalStatusScoring_Married() {
-        ScoringDataDto dto = new ScoringDataDto(BigDecimal.valueOf(500000), 6, "sano", "mironov", "michailovich", GenderEnum.NOT_BINARY, LocalDate.of(2003, 1, 1), "4202", "168138", LocalDate.of(2017, 2, 2), "ROMADIN MVD", MaritalStatusEnum.MARRIED, 5,
+        ScoringDataDto dto = new ScoringDataDto(BigDecimal.valueOf(500000), 6, "sano", "mironov", "michailovich", GenderEnum.NON_BINARY, LocalDate.of(2003, 1, 1), "4202", "168138", LocalDate.of(2017, 2, 2), "ROMADIN MVD", MaritalStatusEnum.MARRIED, 5,
                 new EmploymentDto(EmploymentStatusEnum.SELF_EMPLOYED, "12341345", BigDecimal.valueOf(60000), PositionEnum.TOP_MANAGER, 20, 5
                 ), "123456789", false, false
         );
@@ -157,7 +157,7 @@ public class ScoringServiceTest {
 
     @Test
     void testGenderScoring_ManInAgeRange() {
-        ScoringDataDto dto = new ScoringDataDto(BigDecimal.valueOf(500000), 6, "sano", "mironov", "michailovich", GenderEnum.MAN, LocalDate.of(1990, 1, 1), "4202", "168138", LocalDate.of(2017, 2, 2), "ROMADIN MVD", MaritalStatusEnum.DIVORCED, 5,
+        ScoringDataDto dto = new ScoringDataDto(BigDecimal.valueOf(500000), 6, "sano", "mironov", "michailovich", GenderEnum.MALE, LocalDate.of(1990, 1, 1), "4202", "168138", LocalDate.of(2017, 2, 2), "ROMADIN MVD", MaritalStatusEnum.DIVORCED, 5,
                 new EmploymentDto(EmploymentStatusEnum.SELF_EMPLOYED, "12341345", BigDecimal.valueOf(60000), PositionEnum.TOP_MANAGER, 20, 5
                 ), "123456789", false, false
         );
@@ -168,7 +168,7 @@ public class ScoringServiceTest {
 
     @Test
     void testGenderScoring_WomanInAgeRange() {
-        ScoringDataDto dto = new ScoringDataDto(BigDecimal.valueOf(500000), 6, "sano", "mironov", "michailovich", GenderEnum.WOMAN, LocalDate.of(1990, 1, 1), "4202", "168138", LocalDate.of(2017, 2, 2), "ROMADIN MVD", MaritalStatusEnum.DIVORCED, 5,
+        ScoringDataDto dto = new ScoringDataDto(BigDecimal.valueOf(500000), 6, "sano", "mironov", "michailovich", GenderEnum.FEMALE, LocalDate.of(1990, 1, 1), "4202", "168138", LocalDate.of(2017, 2, 2), "ROMADIN MVD", MaritalStatusEnum.DIVORCED, 5,
                 new EmploymentDto(EmploymentStatusEnum.SELF_EMPLOYED, "12341345", BigDecimal.valueOf(60000), PositionEnum.TOP_MANAGER, 20, 5
                 ), "123456789", false, false
         );
