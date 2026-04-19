@@ -173,10 +173,10 @@ public class DealServiceTest {
         UUID statementId = statement.getStatementId();
         List<LoanOfferDto> expectedOffers = buildLoanOffersList(statementId);
 
-        when(clientService.createClient(requestDto)).thenReturn(client);
-        when(clientService.saveClient(client)).thenReturn(client);
+        when(clientService.createAndSaveClient(requestDto)).thenReturn(client);
         when(statementService.createStatement(client)).thenReturn(statement);
         when(statementService.saveStatement(statement)).thenReturn(statement);
+        when(statementService.createAndSaveStatement(client)).thenReturn(statement);
         when(calculatorClient.offers(requestDto)).thenReturn(expectedOffers);
 
         List<LoanOfferDto> actualOffers = dealService.generateLoanOffers(requestDto);
@@ -187,10 +187,8 @@ public class DealServiceTest {
             assertEquals(statementId, offer.getStatementId());
         }
 
-        verify(clientService, times(1)).createClient(requestDto);
-        verify(clientService, times(1)).saveClient(client);
-        verify(statementService, times(1)).createStatement(client);
-        verify(statementService, times(1)).saveStatement(statement);
+        verify(clientService, times(1)).createAndSaveClient(requestDto);
+        verify(statementService, times(1)).createAndSaveStatement(client);
         verify(calculatorClient, times(1)).offers(requestDto);
     }
 
@@ -201,7 +199,7 @@ public class DealServiceTest {
         Statement statement = buildStatement();
 
         when(statementService.findStatement(statementId)).thenReturn(statement);
-        when(statementService.updateStatus(statement, ApplicationStatus.APPROVED, ChangeType.AUTOMATIC))
+        when(statementService.setStatus(statement, ApplicationStatus.APPROVED, ChangeType.AUTOMATIC))
                 .thenReturn(statement);
         when(statementService.saveStatement(statement)).thenReturn(statement);
 
@@ -209,7 +207,7 @@ public class DealServiceTest {
 
         assertEquals(loanOfferDto, statement.getAppliedOffer());
         verify(statementService, times(1)).findStatement(statementId);
-        verify(statementService, times(1)).updateStatus(statement, ApplicationStatus.APPROVED, ChangeType.AUTOMATIC);
+        verify(statementService, times(1)).setStatus(statement, ApplicationStatus.APPROVED, ChangeType.AUTOMATIC);
         verify(statementService, times(1)).saveStatement(statement);
     }
 
@@ -228,13 +226,12 @@ public class DealServiceTest {
         Credit credit = buildCredit();
 
         when(statementService.findStatement(statementId)).thenReturn(statement);
-        when(clientService.updateClient(client, requestDto)).thenReturn(client);
-        when(clientService.saveClient(client)).thenReturn(client);
+        when(clientService.updateAndSaveClient(client, requestDto)).thenReturn(client);
         when(scoringMapper.toScoringDataDto(requestDto, client, appliedOffer)).thenReturn(scoringDataDto);
         when(calculatorClient.calculateCredit(scoringDataDto)).thenReturn(creditDto);
         when(creditMapper.toCredit(creditDto)).thenReturn(credit);
         when(creditRepository.save(credit)).thenReturn(credit);
-        when(statementService.updateStatus(statement, ApplicationStatus.CC_APPROVED, ChangeType.AUTOMATIC))
+        when(statementService.setStatus(statement, ApplicationStatus.CC_APPROVED, ChangeType.AUTOMATIC))
                 .thenReturn(statement);
         when(statementService.saveStatement(statement)).thenReturn(statement);
 
@@ -242,13 +239,12 @@ public class DealServiceTest {
 
         assertEquals(credit, statement.getCredit());
         verify(statementService, times(1)).findStatement(statementId);
-        verify(clientService, times(1)).updateClient(client, requestDto);
-        verify(clientService, times(1)).saveClient(client);
+        verify(clientService, times(1)).updateAndSaveClient(client, requestDto);
         verify(scoringMapper, times(1)).toScoringDataDto(requestDto, client, appliedOffer);
         verify(calculatorClient, times(1)).calculateCredit(scoringDataDto);
         verify(creditMapper, times(1)).toCredit(creditDto);
         verify(creditRepository, times(1)).save(credit);
-        verify(statementService, times(1)).updateStatus(statement, ApplicationStatus.CC_APPROVED, ChangeType.AUTOMATIC);
+        verify(statementService, times(1)).setStatus(statement, ApplicationStatus.CC_APPROVED, ChangeType.AUTOMATIC);
         verify(statementService, times(1)).saveStatement(statement);
     }
 
@@ -258,8 +254,7 @@ public class DealServiceTest {
         Client client = buildClient();
         Statement statement = buildStatement();
 
-        when(clientService.createClient(requestDto)).thenReturn(client);
-        when(clientService.saveClient(client)).thenReturn(client);
+        when(clientService.createAndSaveClient(requestDto)).thenReturn(client);
         when(statementService.createStatement(client)).thenReturn(statement);
         when(statementService.saveStatement(statement)).thenReturn(statement);
         when(calculatorClient.offers(requestDto)).thenReturn(List.of());

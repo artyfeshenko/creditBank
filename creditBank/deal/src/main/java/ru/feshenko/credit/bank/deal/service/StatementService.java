@@ -50,4 +50,10 @@ public class StatementService {
     public Statement createAndSaveStatement(Client client) {
         return saveStatement(createStatement(client));
     }
+
+    public Statement getByIdForUpdate(UUID id) {
+        return statementRepository.findByIdForUpdate(id).orElseThrow(
+                () -> new StatementNotFoundException("statement with id %s not found".formatted(id))
+        );
+    }
 }

@@ -47,7 +47,7 @@ public class DealService {
 
     @Transactional
     public void selectLoanOffer(LoanOfferDto loanOfferDto) {
-        Statement statement = statementService.findStatement(loanOfferDto.getStatementId());
+        Statement statement = statementService.getByIdForUpdate(loanOfferDto.getStatementId());
         statement = statementService.setStatus(statement, ApplicationStatus.APPROVED, ChangeType.AUTOMATIC);
         statement.setAppliedOffer(loanOfferDto);
         statementService.saveStatement(statement);
