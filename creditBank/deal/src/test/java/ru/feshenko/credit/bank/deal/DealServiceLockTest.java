@@ -3,6 +3,7 @@ package ru.feshenko.credit.bank.deal;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.support.TransactionTemplate;
 import ru.feshenko.credit.bank.deal.dto.LoanOfferDto;
@@ -17,19 +18,23 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doAnswer;
 
 @SpringBootTest
 public class DealServiceLockTest {
-    @Autowired
-    private DealService dealService;
 
     @Autowired
     private StatementRepository statementRepository;
 
     @Autowired
     private PlatformTransactionManager transactionManager;
+
+    @MockitoSpyBean
+    private DealService dealService;
 
     private Statement createStatement() {
         Statement statement = new Statement();
@@ -56,33 +61,31 @@ public class DealServiceLockTest {
         LoanOfferDto offer = createOffer(statement.getStatementId());
 
         ExecutorService executor = Executors.newFixedThreadPool(2);
-
         CountDownLatch lockAcquiredLatch = new CountDownLatch(1);
         CountDownLatch releaseLatch = new CountDownLatch(1);
 
-        executor.submit(() -> {
+        doAnswer(invocation -> {
             TransactionTemplate txTemplate = new TransactionTemplate(transactionManager);
-
             txTemplate.execute(status -> {
                 statementRepository.findByIdForUpdate(statement.getStatementId());
-
                 lockAcquiredLatch.countDown();
-
                 try {
                     releaseLatch.await();
-                } catch (InterruptedException ignored) {}
-
+                } catch (InterruptedException ignored) {
+                    Thread.currentThread().interrupt();
+                }
                 return null;
             });
-        });
+            return null;
+        }).when(dealService).selectLoanOffer(any(LoanOfferDto.class));
 
-        lockAcquiredLatch.await();
+        executor.submit(() -> dealService.selectLoanOffer(offer));
+
+        assertTrue(lockAcquiredLatch.await(5, TimeUnit.SECONDS));
 
         Future<Long> second = executor.submit(() -> {
             long start = System.currentTimeMillis();
-
             dealService.selectLoanOffer(offer);
-
             return System.currentTimeMillis() - start;
         });
 
@@ -90,8 +93,7 @@ public class DealServiceLockTest {
 
         releaseLatch.countDown();
 
-        long duration = second.get();
-
+        long duration = second.get(2, TimeUnit.SECONDS);
         executor.shutdown();
 
         assertTrue(duration >= 400);
