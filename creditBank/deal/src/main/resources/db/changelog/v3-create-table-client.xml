@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <changeSet id="3" author="artemfesenko">
+        <createTable tableName="client">
+            <column name="client_id" type="uuid">
+                <constraints  primaryKey="true"  nullable="false"/>
+            </column>
+            <column name="account_number" type="varchar"/>
+            <column name="birth_date" type="date"/>
+            <column name="dependent_amount" type="integer"/>
+            <column name="email" type="varchar"/>
+            <column name="first_name" type="varchar"/>
+            <column name="gender" type="varchar"/>
+            <column name="last_name" type="varchar"/>
+            <column name="marital_status" type="varchar"/>
+            <column name="middle_name" type="varchar"/>
+            <column name="employment_id" type="uuid">
+                <constraints foreignKeyName="fk_employment" references="employment(employment_id)"/>
+            </column>
+            <column name="passport_id" type="uuid">
+                <constraints foreignKeyName="fk_passport" references="passport(passport_id)"/>
+            </column>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>

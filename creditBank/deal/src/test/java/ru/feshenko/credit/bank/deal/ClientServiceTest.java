@@ -74,43 +74,32 @@ public class ClientServiceTest {
     }
 
     @Test
-    void testCreateClient() {
+    void testCreateAndSaveClient() {
         LoanStatementRequestDto requestDto = buildLoanStatementRequestDto();
         Client expectedClient = buildClient();
 
         when(clientMapper.toClient(requestDto)).thenReturn(expectedClient);
 
-        Client actualClient = clientService.createClient(requestDto);
-
+        when(clientRepository.save(expectedClient)).thenReturn(expectedClient);
+        Client actualClient = clientService.createAndSaveClient(requestDto);
+        assertNotNull(actualClient);
+        assertEquals(expectedClient.getFirstName(), actualClient.getFirstName());
+        verify(clientRepository, times(1)).save(expectedClient);
         assertNotNull(actualClient);
         assertEquals(expectedClient.getFirstName(), actualClient.getFirstName());
         assertEquals(expectedClient.getLastName(), actualClient.getLastName());
         assertEquals(expectedClient.getEmail(), actualClient.getEmail());
         verify(clientMapper, times(1)).toClient(requestDto);
-        verify(clientRepository, never()).save(any());
     }
 
-    @Test
-    void testSaveClient() {
-        Client clientToSave = buildClient();
-        Client savedClient = buildClient();
-
-        when(clientRepository.save(clientToSave)).thenReturn(savedClient);
-
-        Client actualClient = clientService.saveClient(clientToSave);
-
-        assertNotNull(actualClient);
-        assertEquals(savedClient.getFirstName(), actualClient.getFirstName());
-        verify(clientRepository, times(1)).save(clientToSave);
-    }
 
     @Test
     void testUpdateClient() {
         Client existingClient = buildClient();
         FinishRegistrationRequestDto requestDto = buildFinishRegistrationRequestDto();
+        when(clientRepository.save(existingClient)).thenReturn(existingClient);
         doNothing().when(clientMapper).updateClient(existingClient, requestDto);
-        Client updatedClient = clientService.updateClient(existingClient, requestDto);
-
+        Client updatedClient = clientService.updateAndSaveClient(existingClient, requestDto);
         assertNotNull(updatedClient);
         assertEquals(existingClient, updatedClient);
         verify(clientMapper, times(1)).updateClient(existingClient, requestDto);

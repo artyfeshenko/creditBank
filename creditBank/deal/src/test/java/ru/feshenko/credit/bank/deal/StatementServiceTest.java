@@ -110,7 +110,7 @@ public class StatementServiceTest {
         Statement statement = buildStatement();
         int initialHistorySize = statement.getStatusHistory().size();
 
-        Statement updatedStatement = statementService.updateStatus(
+        Statement updatedStatement = statementService.setStatus(
                 statement,
                 ApplicationStatus.APPROVED,
                 ChangeType.MANUAL
